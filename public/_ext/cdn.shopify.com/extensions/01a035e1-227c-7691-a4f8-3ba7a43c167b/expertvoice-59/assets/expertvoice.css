@@ -1,0 +1,113 @@
+/* Font import - using Source Sans 3 which is the current version available on Google Fonts */
+@import url('/_ext/fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap');
+
+.expert-voice-discount-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.expertvoice-block {
+  /* Reset all styles for isolated styling */
+  all: initial;
+  /* Add back basic display properties */
+  display: flex;
+  box-sizing: border-box;
+
+  /* Add back font properties */
+  font-family: 'Source Sans 3', Arial, sans-serif !important;
+  line-height: 1;
+  background-color: #fff;
+  border: 1px solid #c5c5c5;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  align-items: center;
+  gap: 8px;
+}
+
+/**
+ * RESET TEXT ELEMENTS ONLY
+ * This prevents theme styles from affecting our text elements
+ * but preserves SVG rendering capabilities
+ */
+.expertvoice-block p,
+.expertvoice-block div,
+.expertvoice-block span {
+  all: unset;
+  box-sizing: border-box;
+  font-family: 'Source Sans 3', Arial, sans-serif !important;
+}
+.expertvoice-block .expertvoice-logo {
+  display: flex;
+}
+.expertvoice-block .expertvoice-logo svg {
+  width: 30px;
+  height: 30px;
+  display: block;
+}
+
+.expertvoice-block .expertvoice-active-discount-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.expertvoice-block .expertvoice-details p {
+  margin: 0;
+  font-family: 'Source Sans 3', Arial, sans-serif !important;
+}
+.expertvoice-block .expertvoice-active-discount-details .expertvoice-title {
+  font-family: 'Source Sans 3', Arial, sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 15px;
+  color: #252525;
+}
+
+.expertvoice-block .expertvoice-details .expertvoice-description {
+  font-size: 13px;
+  color: #757575;
+  font-family: 'Source Sans 3', Arial, sans-serif !important;
+}
+
+.expertvoice-block .expertvoice-active-discount-details .expertvoice-price-group {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 10px;
+}
+
+.expertvoice-block .expertvoice-active-discount-details .expertvoice-price-group .expertvoice-price {
+  font-family: 'Source Sans 3', Arial, sans-serif !important;
+  font-weight: 600 !important;
+  font-size: 18px;
+  color: #252525;
+}
+
+.expertvoice-block .expertvoice-active-discount-details .expertvoice-price-group .expertvoice-original-price {
+  font-size: 15px;
+  color: #757575;
+  text-decoration: line-through;
+  font-family: 'Source Sans 3', Arial, sans-serif !important;
+}
+
+/*
+ * Theme overrides
+ */
+/******* Dark theme *******/
+.expertvoice-block.dark-theme {
+  background-color: #393939;
+  border: 1px solid #e3e3e3;
+}
+.expertvoice-block.dark-theme p {
+  color: #fff !important;
+}
+/******* Gray theme *******/
+.expertvoice-block.gray-theme {
+  background-color: #f7f7f7;
+  border: 0;
+}

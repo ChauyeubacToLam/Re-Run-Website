@@ -1,0 +1,24 @@
+/* Keep the original image boxes and GSAP paths/timing. The new vertical
+   artwork fills those boxes; no additional scale can spill into headings. */
+@media (min-width: 980px) {
+  .omni-behind-left,
+  .omni-features-right { isolation: isolate; }
+  /* Reserve the existing centre lane for the moving product image.
+     Clip photography only; captions and the original grids remain intact. */
+  .omni-behind-left .omni-behind-paddle-picture {
+    clip-path: inset(0 12% 0 0);
+    mask-image: linear-gradient(to right, #000 0%, #000 75%, transparent 88%);
+  }
+  .omni-behind-left .overlap-middle-paddle .omni-behind-paddle-picture {
+    clip-path: inset(0 22% 0 0);
+    mask-image: linear-gradient(to right, #000 0%, #000 63%, transparent 78%);
+  }
+  .omni-features-right .omni-feature-paddle-picture {
+    clip-path: inset(0 0 0 12%);
+    mask-image: linear-gradient(to right, transparent 12%, #000 25%, #000 100%);
+  }
+}
+@media (max-width: 979px) {
+  /* The decorative fixed ribbon otherwise hides paragraph endings. */
+  #awwwards { display: none; }
+}

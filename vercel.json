@@ -1,0 +1,350 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "npm run build",
+  "outputDirectory": "public",
+  "headers": [
+    {
+      "source": "/pages/omni-pickleball-paddle",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/products/selkirk-omni-pickleball-paddle",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/fonts.googleapis.com/css",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/css; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/fonts.googleapis.com/css2",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/css; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/px.ads.linkedin.com/collect",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/www.googletagmanager.com/gtag/js",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/voyager.lumafield.com/project/dba26992-fbcc-486c-a812-81dcbb25f0d4",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/voyager.lumafield.com/api/v2/projects/dba26992-fbcc-486c-a812-81dcbb25f0d4/bookmarks",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/voyager.lumafield.com/api/v2/projects/dba26992-fbcc-486c-a812-81dcbb25f0d4/index",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/voyager.lumafield.com/api/v2/projects/dba26992-fbcc-486c-a812-81dcbb25f0d4/status",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/voyager.lumafield.com/api/v2/data/1ed45a35-10fc-47a2-bb9e-f0bc112d0f5c/viewRequest",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/voyager.lumafield.com/api/v2/data/a3b0c558-a9aa-4d34-8553-0d48c34061b8/viewRequest",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/use.typekit.net/af/e0fec3/00000000000000007735f2a6/31/l",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "font/woff2"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/use.typekit.net/af/0f06b5/00000000000000007735f2b4/31/l",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "font/woff2"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/unpkg.com/@rive-app/canvas",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/shopify-server.getredo.com/rpc/getSpotlight",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/shopify-cdn.getredo.com/widgets/vs86trd1g57nx55/autocheck",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/shopify-cdn.getredo.com/widgets/vs86trd1g57nx55/fees",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/shop.app/pay/session",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/q.quora.com/_/ad/17b9f8960fc647c88c4010eba28df0f0/pixel",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "image/gif"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/otlp-http-production.shopifysvc.com/v1/logs",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/otlp-http-production.shopifysvc.com/v1/metrics",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/js.hs-banner.com/v2/cf-location",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/ip-check-perf.radar.cloudflare.com/api/info",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/fraud.blockifyapp.com/s/api/block/update-time",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/fraud.blockifyapp.com/p/api/storefront/v2/check-ip",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/fpjscdn.net/v3/EqCevySpPsY5LXnFJ2YY",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/forms.hscollectedforms.net/collected-forms/v1/config/json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/eu.api.fpjs.io/DwmA/JNZ1Dz7/7",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/e.lumafield.com/array/phc_Ghax6m2v0f2Upe0UullvPZeGDiu6mv4yNIX3xTFamHu/config",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/cta-service-cms2.hubspot.com/web-interactives/public/v1/embed/combinedConfigs",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/connect.facebook.net/signals/config/661345199553853",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/api.hubapi.com/hs-script-loader-public/v2/config/pixels-and-events/json",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/_ext/a.pandect.es/store/analytics/15257632822",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/services/login_with_shop/buyer/callback",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/services/login_with_shop/buyer/finalize",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/.well-known/shopify/monorail/unstable/produce_batch",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        }
+      ]
+    },
+    {
+      "source": "/products/selkirk-omni-pickleball-paddle.js",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+node_modules/
+.vercel/
+.env
+.env.*
+*.log
+.DS_Store
+Thumbs.db
+.local-checks/
+task_plan.md
