@@ -310,30 +310,3 @@
 /* Awwwards badge from the clone (relabelled "R. Est. 2024") — not part of the store */
 #awwwards { display: none !important; }
 
-/* Density pass: store pages and the homepage add-on sections read better at roughly 85% of the first cut. */
-.rr-wrap { width: min(1120px, 100% - 40px); }
-.rr-h1 { font-size: clamp(26px, 3.6vw, 44px); }
-.rr-h2 { font-size: clamp(20px, 2.4vw, 28px); }
-.rr-h3 { font-size: clamp(15px, 1.4vw, 18px); }
-.rr-page p, .rr-home-extra p { font-size: 15px; line-height: 1.6; }
-.rr-lead { font-size: 16px; }
-.rr-eyebrow { font-size: 11px; }
-.rr-section { padding: clamp(32px, 5vw, 64px) 0; }
-.rr-hero { padding: clamp(40px, 6vw, 72px) 0; }
-.rr-grid { gap: 20px; }
-.rr-btn { min-height: 44px; padding: 10px 24px; font-size: 13px; }
-.rr-btn--sm { min-height: 36px; padding: 6px 16px; font-size: 12px; }
-.rr-card__body { padding: 14px 16px 16px; }
-.rr-card__body h3 { font-size: 14px; }
-.rr-card__body p { font-size: 13px; }
-.rr-price { font-size: 16px; }
-.rr-buy .rr-price { font-size: 22px; }
-.rr-review { padding: 18px; }
-.rr-review p { font-size: 14px; }
-.rr-faq summary { font-size: 15px; padding: 12px 0; }
-.rr-article p { font-size: 17px; line-height: 1.7; }
-.rr-stats b { font-size: clamp(26px, 3.2vw, 40px); }
-.rr-rating-summary strong { font-size: 34px; }
-.rr-trust div { font-size: 13px; }
-.rr-trust svg { width: 24px; height: 24px; }
-.rr-section-head { margin-bottom: 22px; }
