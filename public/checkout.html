@@ -2087,6 +2087,8 @@
   <label class="rr-radio"><input type="radio" name="shipping" value="express"> Express · 2–3 business days <b>$18</b></label>
   <label class="rr-radio"><input type="radio" name="shipping" value="international"> International · 7–14 business days <b>$25</b></label>
   <h2 class="rr-h2" style="margin-top:18px">Payment</h2>
+  <label class="rr-radio" id="rr-credit-option" hidden><input type="radio" name="payment" value="credit"> Store credit <b>Balance $0.00</b></label>
+  <div class="rr-notice rr-success" id="rr-credit-note" hidden></div>
   <label class="rr-radio"><input type="radio" name="payment" value="card" checked> Credit or debit card <b>Visa · MC · Amex</b></label>
   <div id="rr-card-fields" class="rr-form">
     <div class="rr-field"><label for="card">Card number</label><input id="card" name="card" inputmode="numeric" placeholder="4242 4242 4242 4242" required data-pattern="^\d{16}$" autocomplete="cc-number"><div class="rr-error">Enter a 16-digit card number.</div></div>
