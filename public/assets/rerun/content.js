@@ -32,7 +32,6 @@
   const translate = value => {
     const key = value.trim();
     let next = copy[key];
-    if (next === undefined && /^\$[\d,.]+$/.test(key)) next = 'TBA';
     if (next === undefined) next = key.replace(/\bSelkirk(?: Sport)?\b/g, 'RE:RUN').replace(/\bSELKIRK\b/g, 'RE:RUN').replace(/^(?:Core|Limited):/, 'Color:');
     return value.replace(key, next);
   };

@@ -1,31 +1,39 @@
 # RE:RUN Website
 
-Standalone copy of the RE:RUN modular sneaker concept website, including all client code, images, fonts, video and mirrored dependencies. The original comparison workspace is not required to run this repository.
+Static storefront for RE:RUN One, a modular performance sneaker: one chassis with a replaceable outsole, upper and insole, a digital passport and return credit on every worn module. Built for the e-commerce course assignment (Laudon, *E-commerce* ch. 4): brand board, site structure and full set of web pages.
+
+## Pages
+
+| Area | Files |
+|---|---|
+| Home | `public/index.html` (landing with product story, reviews, FAQ, journal teaser) |
+| Shop | `public/shop.html`, `public/products/*.html` (RE:RUN One, Outsole, Upper, Insole, Care Kit) |
+| The System | `public/services.html` (chassis + modules, Repair & Renew, Module Return Credit, Certified Resale) |
+| Journal | `public/journal.html`, `public/journal/*.html` |
+| Company | `public/about.html`, `public/contact.html`, `public/brand.html` (brand board, site map, customer journey, keywords, marketing hub) |
+| Support | `public/faq.html`, `public/shipping-returns.html`, `public/policies.html`, `public/account.html` |
+| Checkout | `public/cart.html` → `public/checkout.html` → `public/order-confirmed.html` |
+| SEO | `public/sitemap.xml`, `public/robots.txt`, canonical/meta/JSON-LD on every page, GA4 placeholder `G-RR2026SHOE` |
+
+Cart, checkout, account and forms run in the browser (localStorage). There is no payment, email or account backend. Company details, prices, policies and reviews are fictional.
 
 ## Deploy on Vercel
 
 1. Import `ChauyeubacToLam/Re-Run-Website` into Vercel.
-2. Keep **Root Directory** at the repository root.
-3. Framework: **Other**. Build command: **npm run build**. Output directory: **public**.
-4. Deploy. No environment variables or application dependencies are required.
-
-These settings are provided in `vercel.json`. The MIME headers also cover the clone's extensionless JSON, JavaScript, CSS, font and HTML endpoints, including the product data used by the existing color selector. See [Vercel configuration documentation](https://vercel.com/docs/project-configuration/vercel-json).
+2. Root Directory: repository root. Framework: **Other**. Build command: **npm run build**. Output directory: **public**.
+3. Deploy. No environment variables or dependencies are required. `vercel.json` carries the MIME headers for the mirrored extensionless endpoints.
 
 ## Local preview
 
 ```sh
-npm run build
-npm start
+npm run build   # sanity checks
+npm start       # http://127.0.0.1:3000
 ```
 
-Open http://127.0.0.1:3000. Use `node scripts/serve.mjs 3001` to select another port. Serve `public` as the website root; do not open `index.html` directly from the filesystem.
+Serve `public` as the site root; do not open `index.html` from the filesystem.
 
-## Files
+## Layout
 
-- `public/index.html`: primary page.
-- `public/assets/rerun/`: RE:RUN copy, images and gallery data adapter.
-- `public/assets/rerun/v2/`: latest generated artwork and six colorways.
-- `public/cdn/` and `public/_ext/`: copied styles, scripts, fonts and mirrored dependencies.
-- `scripts/source-manifest.json`: SHA-256 inventory of the 586 website files copied from the original workspace.
-
-This is a visual concept site. Color/view selection and the page animations run locally; payments, accounts, the passport app, chatbot and the credit/repair/resale programs are not connected to RE:RUN backend services. Legacy store integration scripts remain in the mirrored source.
+- `public/assets/rerun/` — RE:RUN images, `pages.css` (store pages), `shop.js` (cart, checkout, account, forms), `content.js`/`content.json` (runtime copy and colourway data for the landing page).
+- `public/cdn/`, `public/_ext/` — theme styles, scripts, fonts and mirrored dependencies from the original template.
+- `scripts/check.mjs` — build-time checks; `scripts/source-manifest.json` — SHA-256 inventory of `public/`.
