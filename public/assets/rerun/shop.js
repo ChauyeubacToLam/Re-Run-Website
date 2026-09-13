@@ -72,33 +72,76 @@
     cart.add({ id: d.rrAdd, name: d.name, price: Number(d.price), image: d.image, color, size, qty });
     toast(`Added ${d.name}${color ? ' · ' + color : ''}${size ? ' · ' + size : ''}`, ['View cart', '/cart.html']);
   });
+  function setProductGallery(scope, images) {
+    const main = $('.rr-gallery__main img', scope);
+    const thumbs = $('.rr-gallery__thumbs', scope);
+    if (!main || !thumbs || !Array.isArray(images) || !images.length) return;
+    const buttons = images.map((image, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.src = image.src;
+      button.dataset.alt = image.alt;
+      button.classList.toggle('is-active', index === 0);
+      button.setAttribute('aria-label', `View ${image.alt}`);
+      button.setAttribute('aria-pressed', String(index === 0));
+      const img = document.createElement('img');
+      img.src = image.src; img.alt = image.alt;
+      button.append(img);
+      return button;
+    });
+    thumbs.replaceChildren(...buttons);
+    main.src = images[0].src; main.alt = images[0].alt;
+  }
   document.addEventListener('click', e => {
     const sw = e.target.closest('.rr-swatch, .rr-size');
     if (sw) {
+      const scope = sw.closest('[data-rr-product]') || document;
       const group = sw.parentElement;
-      $$('.is-active', group).forEach(x => x.classList.remove('is-active'));
+      $$('.is-active', group).forEach(x => { x.classList.remove('is-active'); x.setAttribute('aria-pressed', 'false'); });
       sw.classList.add('is-active');
+      sw.setAttribute('aria-pressed', 'true');
       const label = group.closest('.rr-opt')?.querySelector('label span');
       if (label) label.textContent = sw.dataset.value;
-      const stockEl = $('[data-rr-stock]');
+      const stockEl = $('[data-rr-stock]', scope);
       if (sw.classList.contains('rr-swatch') && stockEl) {
         const low = JSON.parse(stockEl.dataset.rrStock || '{}')[sw.dataset.key];
         stockEl.textContent = low ? `Only ${low} left in ${sw.dataset.value}` : 'In stock';
         stockEl.classList.toggle('is-low', !!low);
       }
-      const main = $('.rr-gallery__main img');
-      if (sw.dataset.image && main) main.src = sw.dataset.image;
+      const main = $('.rr-gallery__main img', scope);
+      if (sw.dataset.gallery) {
+        setProductGallery(scope, JSON.parse(sw.dataset.gallery));
+      } else if (sw.dataset.image && main) {
+        main.src = sw.dataset.image; main.alt = sw.dataset.imageAlt || sw.dataset.value;
+        $$('.rr-gallery__thumbs button', scope).forEach(button => {
+          const selected = button.dataset.src === sw.dataset.image;
+          button.classList.toggle('is-active', selected);
+          button.setAttribute('aria-pressed', String(selected));
+        });
+      }
+      if (sw.dataset.image) {
+        const add = $('[data-rr-add]', scope);
+        if (add) add.dataset.image = sw.dataset.image;
+      }
     }
     const thumb = e.target.closest('.rr-gallery__thumbs button');
     if (thumb) {
-      $$('.rr-gallery__thumbs button').forEach(b => b.classList.remove('is-active'));
+      const scope = thumb.closest('[data-rr-product]') || document;
+      const colour = $$('.rr-swatch', scope).find(button => button.dataset.image === thumb.dataset.src);
+      if (colour && !colour.classList.contains('is-active')) colour.click();
+      $$('.rr-gallery__thumbs button', scope).forEach(b => { b.classList.remove('is-active'); b.setAttribute('aria-pressed', 'false'); });
       thumb.classList.add('is-active');
-      const main = $('.rr-gallery__main img');
+      thumb.setAttribute('aria-pressed', 'true');
+      const main = $('.rr-gallery__main img', scope);
       main.src = thumb.dataset.src; main.alt = thumb.dataset.alt || '';
     }
     const q = e.target.closest('.rr-qty button');
     if (q) { const inp = $('input', q.parentElement); inp.value = Math.max(1, (+inp.value || 1) + (+q.dataset.step)); }
   });
+
+  // The six colour cards lead to the matching product selection.
+  const requestedColour = new URLSearchParams(location.search).get('colour');
+  if (requestedColour) $$('.rr-swatch').find(button => button.dataset.key === requestedColour)?.click();
 
   // Cart page.
   const cartRoot = $('#rr-cart-root');
