@@ -319,6 +319,15 @@
     f.reset();
     toast(f.dataset.rrToast || 'Thanks — we have received your message.');
   }));
+  // Cloned "notify me" modal posts to the old store; confirm locally instead.
+  const notify = $('#notify-me-form');
+  if (notify) notify.addEventListener('submit', e => {
+    e.preventDefault(); e.stopImmediatePropagation();
+    const email = $('input[name=email]', notify);
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.value)) { email.focus(); toast('Please enter a valid email.'); return; }
+    notify.hidden = true; const ty = $('#thank-you-msg'); if (ty) ty.style.display = 'block';
+    toast('Noted — we will email you when it is back.');
+  }, true);
   const news = $('form.newsletter');
   if (news) news.addEventListener('submit', e => {
     e.preventDefault(); e.stopImmediatePropagation();
@@ -355,4 +364,39 @@
   });
   fixLinks(); fixChatText();
   new MutationObserver(() => { fixLinks(); fixChatText(); }).observe(document.body, { childList: true, subtree: true });
+
+  // On-page assistant: answers from faq.json. The cloned widget talked to the old store's chat
+  // backend, so its chips, input and floating button are captured here before it sees them.
+  const embed = $('.selkirk-chat-embed');
+  if (embed) {
+    let faq = null, panel = null;
+    const loadFaq = () => faq || fetch('/assets/rerun/faq.json').then(r => r.json()).then(d => (faq = d)).catch(() => (faq = []));
+    const norm = s => s.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').split(/\s+/).filter(w => w.length > 2 && !['the', 'and', 'for', 'you', 'your', 'are', 'can', 'how', 'what', 'does', 'with', 'this', 'that'].includes(w));
+    const answer = q => {
+      const exact = faq.find(f => f.q.toLowerCase() === q.toLowerCase());
+      if (exact) return exact;
+      const words = norm(q);
+      let best = null, score = 0;
+      const stem = w => w.replace(/(ing|ies|es|s|ed)$/, '').slice(0, 5);
+      faq.forEach(f => { const bag = new Set(norm(f.q + ' ' + f.a).map(stem)); const n = words.map(stem).filter(w => bag.has(w)).length + (norm(f.q).map(stem).filter(w => words.map(stem).includes(w)).length); if (n > score) { score = n; best = f; } });
+      return score >= 2 ? best : null;
+    };
+    const show = async q => {
+      await loadFaq();
+      panel ||= embed.appendChild(Object.assign(document.createElement('div'), { className: 'rr-assistant' }));
+      const hit = answer(q);
+      panel.innerHTML = `<p class="rr-assistant__q">${q.replace(/</g, '&lt;')}</p><p class="rr-assistant__a">${hit ? hit.a : 'I could not find that in our FAQ. Email <a href="mailto:support@rerun.run">support@rerun.run</a> — Thao replies within one business day — or browse the <a href="/faq.html">full FAQ</a>.'}</p>${hit ? '<p class="rr-assistant__more"><a href="/faq.html">More answers in the FAQ</a> · <a href="/contact.html">Contact us</a></p>' : ''}`;
+      panel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    };
+    const input = $('.chat-embed-input', embed);
+    document.addEventListener('click', e => {
+      const chip = e.target.closest('.chat-embed-chip');
+      const send = e.target.closest('.chat-embed-send');
+      const fab = e.target.closest('.chat-fab');
+      if (chip) { e.preventDefault(); e.stopImmediatePropagation(); show(chip.dataset.question || chip.textContent.trim()); }
+      else if (send) { e.preventDefault(); e.stopImmediatePropagation(); if (input?.value.trim()) { show(input.value.trim()); input.value = ''; } else input?.focus(); }
+      else if (fab) { e.preventDefault(); e.stopImmediatePropagation(); embed.scrollIntoView({ block: 'center', behavior: 'smooth' }); input?.focus(); toast('Ask a question — answers come straight from our FAQ.'); }
+    }, true);
+    input?.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.stopImmediatePropagation(); if (input.value.trim()) { show(input.value.trim()); input.value = ''; } } }, true);
+  }
 })();

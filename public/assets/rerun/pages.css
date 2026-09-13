@@ -328,3 +328,9 @@
 /* Awwwards badge from the clone (relabelled "R. Est. 2024") — not part of the store */
 #awwwards { display: none !important; }
 
+/* On-page assistant answer panel (homepage chat embed) */
+.rr-assistant { margin: 14px 0 4px; padding: 14px 16px; border-radius: 14px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); color: #fff; font-family: var(--rr-body); }
+.rr-assistant__q { margin: 0 0 8px; font-size: 13px; font-weight: 700; opacity: .75; }
+.rr-assistant__a { margin: 0; font-size: 15px; line-height: 1.55; }
+.rr-assistant__more { margin: 10px 0 0; font-size: 13px; opacity: .8; }
+.rr-assistant a { color: var(--rr-ivory); }
