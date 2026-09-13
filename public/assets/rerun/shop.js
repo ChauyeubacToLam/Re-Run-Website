@@ -5,7 +5,7 @@
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const money = n => '$' + Number(n).toFixed(2);
   const FREE_OVER = 99, STANDARD = 8, EXPRESS = 18, INTL = 25;
-  const PROMOS = { RERUN10: 0.10, NEWRUNNER: 0.15 };
+  const PROMOS = { RERUN10: 0.10, NEWRUNNER: 0.15, THUONGMAIDIENTU: 0.90, GIVEME10STARS: 0.90 }; // codes are matched case-insensitively
   const store = {
     get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },

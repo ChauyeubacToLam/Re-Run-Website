@@ -15,7 +15,7 @@ Static storefront for RE:RUN One, a modular performance sneaker: one chassis wit
 | Checkout | `public/cart.html` → `public/checkout.html` → `public/order-confirmed.html` |
 | SEO | `public/sitemap.xml`, `public/robots.txt`, canonical/meta/JSON-LD on every page, GA4 placeholder `G-RR2026SHOE` |
 
-Cart, checkout, account and forms run in the browser (localStorage). There is no payment, email or account backend. Company details, prices, policies and reviews are fictional.
+Cart, checkout, account and forms run in the browser (localStorage). Promo codes: `RERUN10` (10%), `NEWRUNNER` (15%), `ThuongMaiDienTu` and `GiveMe10stars` (90%). There is no payment, email or account backend. Company details, prices, policies and reviews are fictional.
 
 ## Deploy on Vercel
 
