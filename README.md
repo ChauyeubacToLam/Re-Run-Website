@@ -7,7 +7,8 @@ Static storefront for RE:RUN One, a modular performance sneaker: one chassis wit
 | Area | Files |
 |---|---|
 | Home | `public/index.html` (landing with product story, reviews, FAQ, journal teaser) |
-| Shop | `public/shop.html`, `public/products/*.html` (RE:RUN One, Outsole, Upper, Insole, Care Kit) |
+| Shop | `public/shop.html`, `public/products/*.html` (RE:RUN One, Outsole, Upper, Insole, Care Kit), `public/bundles.html` (Starter Bundle, Full Refresh Bundle, Outsole Twin Pack, Insole Trio) |
+| Merchandising | Bundle upsell box and "Frequently bought together" on every product page; "You may also like" and a switch-to-bundle nudge in the cart; one-click add-ons at checkout. Data in `public/assets/rerun/catalog.js`. |
 | The System | `public/services.html` (chassis + modules, Repair & Renew, Module Return Credit, Certified Resale) |
 | Journal | `public/journal.html`, `public/journal/*.html` |
 | Company | `public/about.html`, `public/contact.html`, `public/brand.html` (brand board, site map, customer journey, keywords, marketing hub) |

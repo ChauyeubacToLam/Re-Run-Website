@@ -72,6 +72,108 @@
     cart.add({ id: d.rrAdd, name: d.name, price: Number(d.price), image: d.image, color, size, qty });
     toast(`Added ${d.name}${color ? ' · ' + color : ''}${size ? ' · ' + size : ''}`, ['View cart', '/cart.html']);
   });
+  // ---- Bundles, frequently-bought-together and quick adds (facts come from catalog.js).
+  const CAT = window.RR_CATALOG || { products: {}, bundles: [], colorImages: {}, colors: [], sizes: [], pairs: {} };
+  const colorKey = name => (CAT.colors.find(([, n]) => n === name) || ['chalk'])[0];
+  const productImage = (pid, color) => (color && CAT.colorImages[pid]?.[colorKey(color)]) || CAT.products[pid]?.image;
+  const addProduct = (pid, { color = '', size = '', qty = 1 } = {}) => {
+    const p = CAT.products[pid];
+    if (!p || (p.sizes && !size)) return false;
+    cart.add({ id: pid, name: p.name, price: p.price, image: productImage(pid, p.colors ? color : ''), color: p.colors ? color : '', size: p.sizes ? size : '', qty });
+    return true;
+  };
+  const addBundle = (bid, { color = '', size = '', qty = 1 } = {}) => {
+    const b = CAT.bundles.find(x => x.id === bid);
+    if (!b || (b.sizes && !size)) return false;
+    const first = b.items.find(([pid]) => CAT.products[pid]?.colors)?.[0];
+    cart.add({ id: 'bundle:' + bid, bundle: bid, name: b.name, price: b.price, compare: b.compare, image: first ? productImage(first, color) : b.image, color: b.colors ? color : '', size: b.sizes ? size : '', qty, contains: b.items.map(([pid]) => pid), contents: b.contents });
+    return true;
+  };
+  const cartSize = () => cart.items().find(i => i.size)?.size || store.get('rr_user', null)?.size || '';
+  const cartColor = () => cart.items().find(i => i.color)?.color || 'Chalk';
+  document.addEventListener('click', e => {
+    const bb = e.target.closest('[data-rr-bundle]');
+    if (bb) {
+      e.preventDefault();
+      const b = CAT.bundles.find(x => x.id === bb.dataset.rrBundle);
+      if (!b) return;
+      const card = bb.closest('.rr-bundle'), pdp = bb.closest('[data-rr-product]');
+      const color = card ? ($('select[name=color]', card)?.value || '') : pdp ? ($('.rr-swatch.is-active', pdp)?.dataset.value || '') : cartColor();
+      const size = card ? ($('select[name=size]', card)?.value || '') : pdp ? ($('.rr-size.is-active', pdp)?.dataset.value || '') : cartSize();
+      if (b.sizes && !size) {
+        toast('Please choose a size for the bundle.');
+        const el = card ? $('select[name=size]', card) : $('.rr-sizes', pdp);
+        el?.scrollIntoView({ block: 'center', behavior: 'smooth' }); el?.focus?.();
+        return;
+      }
+      if (addBundle(b.id, { color: color || 'Chalk', size })) toast(`Added ${b.name} · you save ${money(b.save)}`, ['View cart', '/cart.html']);
+      return;
+    }
+    const qa = e.target.closest('[data-rr-quick]');
+    if (qa) {
+      e.preventDefault();
+      const strip = qa.closest('[data-rr-strip]');
+      const p = CAT.products[qa.dataset.rrQuick];
+      const size = $('select[data-rr-strip-size]', strip)?.value || cartSize();
+      if (!p) return;
+      if (p.sizes && !size) { toast('Please choose a size first.'); $('select[data-rr-strip-size]', strip)?.focus(); return; }
+      if (addProduct(p.id, { color: cartColor(), size })) { toast(`Added ${p.name}`, ['View cart', '/cart.html']); qa.dispatchEvent(new CustomEvent('rr:cart', { bubbles: true })); }
+      return;
+    }
+    const fb = e.target.closest('[data-rr-fbt]');
+    if (fb) {
+      e.preventDefault();
+      const box = fb.closest('[data-rr-fbt-box]');
+      const picks = $$('input[type=checkbox]:checked', box).map(c => c.dataset.id);
+      if (!picks.length) { toast('Tick at least one item.'); return; }
+      const color = $('.rr-swatch.is-active')?.dataset.value || 'Chalk';
+      const size = $('.rr-size.is-active')?.dataset.value || $('.rr-fbt-size', box)?.value || '';
+      if (picks.some(pid => CAT.products[pid]?.sizes) && !size) { toast('Please choose a size first.'); ($('.rr-fbt-size', box) || $('.rr-sizes'))?.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+      picks.forEach(pid => addProduct(pid, { color, size }));
+      toast(`Added ${picks.length} item${picks.length > 1 ? 's' : ''} to your cart`, ['View cart', '/cart.html']);
+    }
+  });
+  document.addEventListener('change', e => {
+    const box = e.target.closest('[data-rr-fbt-box]');
+    if (!box) return;
+    const picks = $$('input[type=checkbox]:checked', box);
+    $('[data-fbt-count]', box).textContent = picks.length;
+    $('[data-fbt-total]', box).textContent = money(picks.reduce((n, c) => n + Number(c.dataset.price), 0));
+  });
+  // "You may also like" strip for the cart and checkout pages: products not yet in the cart, best pairings first.
+  const suggestIds = (n = 3) => {
+    const items = cart.items();
+    const inCart = new Set(items.flatMap(i => i.contains || [i.id]));
+    const seed = items.map(i => (i.contains || [i.id])[0]);
+    const order = [...new Set([...seed.flatMap(pid => CAT.pairs[pid] || []), ...Object.keys(CAT.products)])];
+    return order.filter(pid => !inCart.has(pid)).slice(0, n);
+  };
+  const suggestStrip = (title, ids, compact = false) => {
+    if (!ids.length) return '';
+    const size = cartSize();
+    const sizeSel = ids.some(pid => CAT.products[pid].sizes) ? `<label class="rr-strip__size">Size <select data-rr-strip-size>${CAT.sizes.map(x => `<option${x === size ? ' selected' : ''}>${x}</option>`).join('')}</select></label>` : '';
+    const row = ids.map(pid => { const p = CAT.products[pid]; return `<div class="rr-strip__item"><a href="${p.url}"><img src="${p.image}" alt="${p.name}"></a><div><b>${p.short}</b><small>${money(p.price)}</small></div><button type="button" class="rr-btn rr-btn--sm rr-btn--dark" data-rr-quick="${pid}">Add</button></div>`; }).join('');
+    return `<div class="rr-strip${compact ? ' rr-strip--compact' : ''}" data-rr-strip><div class="rr-strip__head"><b>${title}</b>${sizeSel}</div><div class="rr-strip__row">${row}</div></div>`;
+  };
+  // ponytail: bundle match ignores colour and keys on the first sized item's size; fine for a four-bundle catalogue.
+  const bundleNudge = () => {
+    const items = cart.items().filter(i => !i.bundle);
+    const size = items.find(i => i.size)?.size || '';
+    for (const b of CAT.bundles) {
+      const ok = b.items.every(([pid, q]) => items.filter(i => i.id === pid && (!i.size || i.size === size)).reduce((n, i) => n + i.qty, 0) >= q);
+      if (ok) return { b, size, color: items.find(i => i.color && b.items.some(([pid]) => pid === i.id))?.color || 'Chalk' };
+    }
+    return null;
+  };
+  const switchToBundle = ({ b, size, color }) => {
+    const items = cart.items();
+    b.items.forEach(([pid, q]) => {
+      let left = q;
+      items.forEach(i => { if (left && !i.bundle && i.id === pid && (!i.size || i.size === size)) { const take = Math.min(left, i.qty); i.qty -= take; left -= take; } });
+    });
+    cart.save(items.filter(i => i.qty > 0));
+    addBundle(b.id, { color, size });
+  };
   function setProductGallery(scope, images) {
     const main = $('.rr-gallery__main img', scope);
     const thumbs = $('.rr-gallery__thumbs', scope);
@@ -157,18 +259,21 @@
       const disc = PROMOS[promo] ? sub * PROMOS[promo] : 0;
       const ship = sub - disc >= FREE_OVER ? 0 : STANDARD;
       const total = sub - disc + ship;
+      const nudge = bundleNudge();
       cartRoot.innerHTML = `
         <div class="rr-layout-2">
           <div>
             <table class="rr-cart-table"><thead><tr><th>Item</th><th>Qty</th><th>Price</th><th></th></tr></thead><tbody>
             ${items.map((i, n) => `<tr>
-              <td><div class="rr-cart-item"><img src="${i.image}" alt=""><div><b>${i.name}</b><small>${[i.color, i.size].filter(Boolean).join(' · ') || 'One size'}</small></div></div></td>
+              <td><div class="rr-cart-item"><img src="${i.image}" alt=""><div><b>${i.name}</b><small>${[i.contents, i.color, i.size].filter(Boolean).join(' · ') || 'One size'}</small></div></div></td>
               <td><div class="rr-qty"><button type="button" data-cart-step="-1" data-n="${n}">−</button><input value="${i.qty}" readonly aria-label="Quantity"><button type="button" data-cart-step="1" data-n="${n}">+</button></div></td>
-              <td><b>${money(i.price * i.qty)}</b></td>
+              <td><b>${money(i.price * i.qty)}</b>${i.compare ? `<br><s class="rr-muted" style="font-weight:400">${money(i.compare * i.qty)}</s>` : ''}</td>
               <td><button type="button" class="rr-remove" data-remove="${n}">Remove</button></td>
             </tr>`).join('')}
             </tbody></table>
             <p class="rr-muted" style="margin-top:18px">${ship ? `Add ${money(FREE_OVER - (sub - disc))} more for free standard shipping.` : 'You qualify for free standard shipping.'}</p>
+            ${nudge ? `<div class="rr-notice rr-nudge"><div><b>Save ${money(nudge.b.save)}.</b> Your cart already holds everything in the <b>${nudge.b.name}</b> (${nudge.b.contents}). Swap the separate items for the bundle and pay ${money(nudge.b.price)} instead of ${money(nudge.b.compare)}.</div><button type="button" class="rr-btn rr-btn--sm rr-btn--dark" data-rr-switch>Switch to bundle</button></div>` : ''}
+            ${suggestStrip('You may also like', suggestIds(3))}
           </div>
           <aside class="rr-summary">
             <h3 class="rr-h3">Order summary</h3>
@@ -197,7 +302,9 @@
       if (rm) { items.splice(+rm.dataset.remove, 1); cart.save(items); render(); }
       const st = e.target.closest('[data-cart-step]');
       if (st) { const it = items[+st.dataset.n]; it.qty = Math.max(1, it.qty + (+st.dataset.cartStep)); cart.save(items); render(); }
+      if (e.target.closest('[data-rr-switch]')) { const n = bundleNudge(); if (n) { switchToBundle(n); toast(`Switched to ${n.b.name} · saved ${money(n.b.save)}`); render(); } }
     });
+    cartRoot.addEventListener('rr:cart', render);
     render();
   }
 
@@ -240,7 +347,7 @@
   // Checkout page.
   const checkout = $('#rr-checkout');
   if (checkout) {
-    const items = cart.items();
+    let items = cart.items();
     if (!items.length) { location.replace('/cart.html'); return; }
     const promo = store.get('rr_promo', '');
     const rates = { standard: STANDARD, express: EXPRESS, international: INTL };
@@ -265,7 +372,7 @@
       const creditUsed = payment === 'credit' ? Math.min(balance, total) : 0;
       const due = Math.round((total - creditUsed) * 100) / 100;
       $('#rr-sum').innerHTML = `
-        ${items.map(i => `<dt>${i.name} × ${i.qty}<br><small class="rr-muted">${[i.color, i.size].filter(Boolean).join(' · ')}</small></dt><dd>${money(i.price * i.qty)}</dd>`).join('')}
+        ${items.map(i => `<dt>${i.name} × ${i.qty}<br><small class="rr-muted">${[i.contents, i.color, i.size].filter(Boolean).join(' · ')}</small></dt><dd>${money(i.price * i.qty)}</dd>`).join('')}
         <dt>Subtotal</dt><dd>${money(sub)}</dd>
         ${disc ? `<dt>Promo ${promo}</dt><dd>−${money(disc)}</dd>` : ''}
         <dt>Shipping</dt><dd>${ship ? money(ship) : 'Free'}</dd>
@@ -281,6 +388,10 @@
     };
     checkout.addEventListener('change', summary);
     summary();
+    const addons = $('#rr-addons');
+    const renderAddons = () => { addons.innerHTML = suggestStrip('Add to your order', suggestIds(2), true); };
+    renderAddons();
+    addons.addEventListener('rr:cart', () => { items = cart.items(); renderAddons(); summary(); });
     checkout.addEventListener('submit', e => {
       e.preventDefault();
       let ok = true;
@@ -305,7 +416,7 @@
         const ledger = store.get('rr_ledger', []); ledger.push({ date: order.date.slice(0, 10), note: `Applied to order ${order.id}`, amount: -t.creditUsed }); store.set('rr_ledger', ledger);
       }
       // A complete sneaker gets its own passport the moment it is ordered.
-      const pairs = items.filter(i => i.id === 'rerun-one');
+      const pairs = items.filter(i => i.id === 'rerun-one' || i.contains?.includes('rerun-one'));
       if (pairs.length && user) {
         const passports = store.get('rr_passports', []);
         pairs.forEach(i => { for (let n = 0; n < i.qty; n++) passports.push({ code: 'RR1-' + Math.random().toString(36).slice(2, 6).toUpperCase() + '-' + Math.random().toString(36).slice(2, 5).toUpperCase(), model: `RE:RUN One · ${i.color} · ${i.size}`, since: new Date().toDateString().slice(4), modules: [['Chassis', 'on delivery', '0 km', '5 years'], [`Outsole #1 (${i.color})`, 'on delivery', '0 km', '12 months'], [`Upper #1 (${i.color})`, 'on delivery', '0 km', '12 months'], ['Insole #1', 'on delivery', '0 km', '12 months']], note: `Activates when order ${order.id} is delivered.`, fresh: true }); });
@@ -336,7 +447,7 @@
         <div class="rr-layout-2" style="margin-top:28px">
           <div>
             <h3 class="rr-h3">Items</h3>
-            <table class="rr-cart-table"><tbody>${order.items.map(i => `<tr><td><div class="rr-cart-item"><img src="${i.image}" alt=""><div><b>${i.name}</b><small>${[i.color, i.size].filter(Boolean).join(' · ') || 'One size'} · Qty ${i.qty}</small></div></div></td><td><b>${money(i.price * i.qty)}</b></td></tr>`).join('')}</tbody></table>
+            <table class="rr-cart-table"><tbody>${order.items.map(i => `<tr><td><div class="rr-cart-item"><img src="${i.image}" alt=""><div><b>${i.name}</b><small>${[i.contents, i.color, i.size].filter(Boolean).join(' · ') || 'One size'} · Qty ${i.qty}</small></div></div></td><td><b>${money(i.price * i.qty)}</b></td></tr>`).join('')}</tbody></table>
             <h3 class="rr-h3" style="margin-top:28px">Delivery</h3>
             <p>${order.name}<br>${order.address}<br><span class="rr-muted">${order.method[0].toUpperCase() + order.method.slice(1)} shipping · estimated delivery ${eta.toDateString()}</span></p>
             <h3 class="rr-h3">Payment</h3>
