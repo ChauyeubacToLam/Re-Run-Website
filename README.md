@@ -9,11 +9,12 @@ Static storefront for RE:RUN One, a modular performance sneaker: one chassis wit
 | Home | `public/index.html` (landing with product story, reviews, FAQ, journal teaser) |
 | Shop | `public/shop.html`, `public/products/*.html` (RE:RUN One, Outsole, Upper, Insole, Care Kit), `public/bundles.html` (Starter Bundle, Full Refresh Bundle, Outsole Twin Pack, Insole Trio) |
 | Merchandising | Bundle upsell box and "Frequently bought together" on every product page; "You may also like" and a switch-to-bundle nudge in the cart; one-click add-ons at checkout. Data in `public/assets/rerun/catalog.js`. |
-| The System | `public/services.html` (chassis + modules, Repair & Renew, Module Return Credit, Certified Resale) |
+| How it works | `public/how-it-works.html` (teardown video, anatomy of the four parts, step-by-step outsole/upper/insole swap guides, HowTo structured data), `public/services.html` (chassis + modules, Repair & Renew, Module Return Credit, Certified Resale) |
 | Journal | `public/journal.html`, `public/journal/*.html` |
 | Company | `public/about.html`, `public/contact.html`, `public/brand.html` (brand board, site map, customer journey, keywords, marketing hub) |
 | Support | `public/faq.html`, `public/shipping-returns.html`, `public/policies.html`, `public/account.html` |
 | Checkout | `public/cart.html` → `public/checkout.html` → `public/order-confirmed.html` |
+| Navigation | Five hubs (Shop, How it works, Journal, Support, About), one level of children each, repeated in the mega menu, footer and utility bar. `rerun-work/v3/check-clicks.py` crawls the build and proves every page sits within three clicks of the homepage. |
 | SEO | `public/sitemap.xml`, `public/robots.txt`, canonical/meta/JSON-LD on every page, GA4 placeholder `G-RR2026SHOE` |
 
 Cart, checkout, account and forms run in the browser (localStorage). Demo account: `kietchuyenlyhsgs@gmail.com` / `Kiet0302@` — three past orders, a digital passport and $1,012 of store credit that can pay for new orders at checkout (choose **Store credit**). Promo codes: `RERUN10` (10%), `NEWRUNNER` (15%), `ThuongMaiDienTu` and `GiveMe10stars` (90%). There is no payment, email or account backend. Company details, prices, policies and reviews are fictional.

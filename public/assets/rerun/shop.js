@@ -140,6 +140,18 @@
     $('[data-fbt-count]', box).textContent = picks.length;
     $('[data-fbt-total]', box).textContent = money(picks.reduce((n, c) => n + Number(c.dataset.price), 0));
   });
+  // Teardown guide: one panel per module, switched by the pill tabs above them.
+  document.addEventListener('click', e => {
+    const tab = e.target.closest('[data-rr-tab]');
+    if (!tab) return;
+    const id = tab.dataset.rrTab;
+    $$('[data-rr-tab]').forEach(t => { const on = t === tab; t.classList.toggle('is-active', on); t.setAttribute('aria-pressed', String(on)); });
+    $$('[data-rr-panel]').forEach(p => { p.hidden = p.dataset.rrPanel !== id; });
+    history.replaceState(null, '', '#swap-' + id);
+  });
+  const swapHash = location.hash.match(/^#swap-([a-z]+)$/);
+  if (swapHash) $(`[data-rr-tab="${swapHash[1]}"]`)?.click();
+
   // "You may also like" strip for the cart and checkout pages: products not yet in the cart, best pairings first.
   const suggestIds = (n = 3) => {
     const items = cart.items();
@@ -573,7 +585,7 @@
   $$('form.search-bar').forEach(f => { f.action = '/shop.html'; $('input[name=type]', f)?.remove(); });
 
   // Links the cloned scripts inject at runtime still point at the old store; re-point them.
-  const DEAD = [[/loopreturns/, '/shipping-returns.html#returns'], [/^\/pages\/warranty/, '/policies.html#warranty'], [/^\/pages\/contact/, '/contact.html'],
+  const DEAD = [[/^\/policies\//, '/policies.html'], [/loopreturns/, '/shipping-returns.html#returns'], [/^\/pages\/warranty/, '/policies.html#warranty'], [/^\/pages\/contact/, '/contact.html'],
     [/^\/pages\/|selkirk\.com/, '/'], [/^\/account/, '/account.html'], [/^\/cart$/, '/cart.html'], [/^\/collections/, '/shop.html'], [/^\/products\/(?!.*\.html)/, '/shop.html']];
   const fixLinks = () => $$('a[href]').forEach(a => {
     const h = a.getAttribute('href');
